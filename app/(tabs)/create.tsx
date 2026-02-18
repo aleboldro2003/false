@@ -1,16 +1,25 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Colors } from '@/constants/theme';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { tabState } from './tabState';
 
-// This screen is never shown — the tab press is intercepted
-// to open the CreatePost modal instead.
-export default function CreatePlaceholder() {
-    return <View style={styles.container} />;
+export default function CreateTab() {
+    const router = useRouter();
+
+    useFocusEffect(
+        useCallback(() => {
+            // 1. Open the modal
+            router.push('/create-post');
+
+            // 2. Switch the underlying tab back to the previous one (e.g. podcasts or index).
+            // We use a small timeout to ensure the modal push creates the history entry 
+            // before we switch the tab underneath.
+            setTimeout(() => {
+                const target = tabState.lastActive === 'create' ? 'index' : tabState.lastActive;
+                // Safely navigate to the previous tab
+                router.navigate(target as any);
+            }, 100);
+        }, [router])
+    );
+
+    return null;
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.background,
-    },
-});

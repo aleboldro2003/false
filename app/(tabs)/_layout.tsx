@@ -1,93 +1,85 @@
-import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { Tabs, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
-import { Colors } from '@/constants/theme';
-import { HapticTab } from '@/components/haptic-tab';
 import MiniPlayer from '@/components/MiniPlayer';
+import { Colors } from '@/constants/theme';
+import { useRouter } from 'expo-router';
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+
+import { tabState } from './tabState';
 
 export default function TabLayout() {
   const router = useRouter();
 
+  const updateTabState = (name: string) => {
+    tabState.lastActive = name;
+  };
+
   return (
     <View style={styles.wrapper}>
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-          tabBarButton: HapticTab,
-          tabBarActiveTintColor: '#FFFFFF',
-          tabBarInactiveTintColor: '#888888',
-          tabBarStyle: styles.tabBar,
-          tabBarLabelStyle: styles.tabLabel,
-          tabBarBackground: () => (
-            <BlurView
-              tint="dark"
-              intensity={80}
-              style={StyleSheet.absoluteFill}
-            />
-          ),
+      <NativeTabs
+        blurEffect="systemChromeMaterial"
+        iconColor={{
+          selected: '#FFFFFF',
+          default: '#888888',
         }}
       >
-        <Tabs.Screen
+        <NativeTabs.Trigger
           name="index"
-          options={{
-            title: 'Home',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
+          listeners={{ focus: () => updateTabState('index') }}
+        >
+          <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="house.fill" />
+        </NativeTabs.Trigger>
+
+        <NativeTabs.Trigger
           name="podcasts"
-          options={{
-            title: 'Podcasts',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="play-circle" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
+          listeners={{ focus: () => updateTabState('podcasts') }}
+        >
+          <NativeTabs.Trigger.Label>Podcasts</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="play.circle.fill" />
+        </NativeTabs.Trigger>
+
+        <NativeTabs.Trigger
           name="create"
-          options={{
-            title: '',
-            tabBarIcon: ({ color }) => (
-              <View style={styles.createBtnIcon}>
-                <Ionicons name="add" size={28} color={Colors.textPrimary} />
-              </View>
-            ),
-          }}
-          listeners={{
-            tabPress: (e) => {
-              e.preventDefault();
-              router.push('/create-post');
-            },
-          }}
-        />
-        <Tabs.Screen
+        >
+          <NativeTabs.Trigger.Label>Create</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="plus.circle.fill" />
+        </NativeTabs.Trigger>
+
+        <NativeTabs.Trigger
           name="search"
-          options={{
-            title: 'Search',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="search" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tabs.Screen
+          role="search"
+          listeners={{ focus: () => updateTabState('search') }}
+        >
+          <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="magnifyingglass" />
+        </NativeTabs.Trigger>
+
+        <NativeTabs.Trigger
           name="profile"
-          options={{
-            title: 'Profile',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="person" size={size} color={color} />
-            ),
-          }}
-        />
-      </Tabs>
+          listeners={{ focus: () => updateTabState('profile') }}
+        >
+          <NativeTabs.Trigger.Label>Profile</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon sf="person.fill" />
+        </NativeTabs.Trigger>
+      </NativeTabs>
 
       {/* Mini-player floating above the tab bar */}
-      <View style={styles.miniPlayerContainer}>
+      <View style={styles.miniPlayerContainer} pointerEvents="box-none">
         <MiniPlayer />
       </View>
+
+      {/* 
+        Transparent overlay to intercept "Create" tab presses.
+        This prevents the native navigation to the "create" tab and opens the modal directly.
+        Positioned at the center (1/5th of width) over the tab bar.
+      */}
+      <TouchableOpacity
+        style={styles.createOverlay}
+        onPress={() => router.push('/create-post')}
+        activeOpacity={1}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+      />
     </View>
   );
 }
@@ -97,37 +89,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  tabBar: {
-    backgroundColor: Platform.OS === 'web' ? 'rgba(0,0,0,0.85)' : 'transparent',
-    borderTopColor: Colors.border,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    height: 85,
-    paddingTop: 8,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  tabLabel: {
-    fontSize: 10,
-    fontWeight: '500',
-  },
-  createBtnIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: -4,
-  },
   miniPlayerContainer: {
     position: 'absolute',
-    bottom: 85,
+    bottom: 90, // Adjusted for native tab bar height
     left: 0,
     right: 0,
-    zIndex: 10,
+    zIndex: 9999,
+    elevation: 10,
+  },
+  createOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
+    width: '20%', // Assuming 5 tabs, 100/5 = 20%
+    height: 85,   // Covers standard tab bar height
+    zIndex: 10000,
+    // backgroundColor: 'rgba(255, 0, 0, 0.2)', // Uncomment for debugging position
   },
 });
