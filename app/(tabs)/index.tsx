@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors, Spacing, FontSize, FontWeight, Radius } from '@/constants/theme';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/contexts/AuthContext';
 import PostItem from '@/components/PostItem';
 import type { Post } from '@/constants/mockData';
+import { Colors, FontSize, FontWeight, Radius, Spacing } from '@/constants/theme';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Helper to format "time ago" from a timestamp
 function timeAgo(dateStr: string): string {
@@ -96,7 +96,6 @@ export default function HomeScreen() {
           isThread: false,
           comments: row.comments?.[0]?.count || 0,
           reposts: 0,
-          likes: row.likes?.[0]?.count || 0,
           likes: row.likes?.[0]?.count || 0,
           likedByMe: likedPostIds.has(row.id),
           // We need author_id for navigation, let's add it to the Post object if possible, or use a workaround.
@@ -248,6 +247,8 @@ export default function HomeScreen() {
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+          contentInsetAdjustmentBehavior="automatic"
+          automaticallyAdjustsScrollIndicatorInsets={true}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

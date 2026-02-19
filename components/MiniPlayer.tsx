@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { FontSize, FontWeight } from '@/constants/theme';
+import { usePlayer } from '@/contexts/PlayerContext';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useSegments } from 'expo-router';
-import { Colors, Spacing, FontSize, FontWeight, Radius } from '@/constants/theme';
-import { usePlayer } from '@/contexts/PlayerContext';
 import { VideoView } from 'expo-video';
-import { BlurView } from 'expo-blur';
+import React, { useEffect, useState } from 'react';
+import { Image, Platform, PlatformColor, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function MiniPlayer() {
     const router = useRouter();
@@ -45,23 +44,12 @@ export default function MiniPlayer() {
     // Don't render if there's no track or player
     if (!currentTrack || !player) return null;
 
-    // Determine the background image source (cover art)
-    const bgImageSource = currentTrack.coverUrl ? { uri: currentTrack.coverUrl } : null;
-
     return (
         <TouchableOpacity
             style={[styles.container]}
             activeOpacity={0.9}
             onPress={handlePress}
         >
-            {/* Background Image with Blur */}
-            {bgImageSource && (
-                <View style={styles.backgroundContainer}>
-                    <Image source={bgImageSource} style={styles.backgroundImage} blurRadius={30} />
-                    <View style={styles.darkOverlay} />
-                </View>
-            )}
-
             <View style={styles.content}>
                 {/* 16:9 Video View or Thumbnail */}
                 <View style={styles.videoWrapper}>
@@ -71,11 +59,12 @@ export default function MiniPlayer() {
                             style={styles.videoView}
                             nativeControls={false}
                             allowsPictureInPicture={false}
+                            allowsVideoFrameAnalysis={false}
                             contentFit="cover"
                         />
                     ) : (
                         <Image
-                            source={{ uri: currentTrack.thumbnail || currentTrack.coverUrl }}
+                            source={{ uri: currentTrack.coverUrl }}
                             style={styles.thumbnail}
                         />
                     )}
@@ -92,12 +81,12 @@ export default function MiniPlayer() {
                     <Ionicons
                         name={isPlaying ? 'pause' : 'play'}
                         size={22}
-                        color={'#FFFFFF'}
+                        color={Platform.OS === 'ios' ? PlatformColor('label') : '#FFFFFF'}
                     />
                 </TouchableOpacity>
             </View>
 
-            {/* Progress bar — thin white line at the very bottom edge */}
+            {/* Progress bar — thin line at the very bottom edge */}
             <View style={styles.progressTrack}>
                 <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
             </View>
@@ -107,45 +96,32 @@ export default function MiniPlayer() {
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 8,
-        marginBottom: 8,
-        borderRadius: Radius.md,
+        marginHorizontal: 12, // Floating effect
+        marginBottom: 12,
+        borderRadius: 32, // More rounded, pill-like (Apple style)
         overflow: 'hidden',
-        height: 64, // Fixed height for consistent look
-        backgroundColor: '#1A1A1A', // Fallback color
-        // Shadow
+        height: '100%',
+        // Shadow for depth
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 4,
         },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        justifyContent: 'center', // Center content vertically
-    },
-    backgroundContainer: {
-        ...StyleSheet.absoluteFillObject,
-    },
-    backgroundImage: {
-        ...StyleSheet.absoluteFillObject,
-        opacity: 0.8,
-    },
-    darkOverlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0,0,0,0.5)', // Darken the blurred image for text legibility
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 8,
+        paddingVertical: '1%'
     },
     content: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: Spacing.sm, // Reduced padding for 16:9 fit
-        gap: Spacing.sm,
+        paddingHorizontal: 12,
         height: '100%',
     },
     videoWrapper: {
-        width: 80, // Approximate 16:9 width for height ~45-50
-        aspectRatio: 16 / 9,
-        borderRadius: 4,
+        height: 'auto',
+        width: '20%',
+        borderRadius: 8,
         overflow: 'hidden',
         backgroundColor: '#000',
     },
@@ -160,14 +136,15 @@ const styles = StyleSheet.create({
     info: {
         flex: 1,
         justifyContent: 'center',
+        marginLeft: 12,
     },
     title: {
-        color: '#FFFFFF', // Always white due to dark background
+        color: Platform.OS === 'ios' ? PlatformColor('label') : '#FFFFFF',
         fontSize: FontSize.sm,
         fontWeight: FontWeight.bold,
     },
     creator: {
-        color: 'rgba(255,255,255,0.8)',
+        color: Platform.OS === 'ios' ? PlatformColor('secondaryLabel') : 'rgba(255,255,255,0.8)',
         fontSize: FontSize.xs,
         marginTop: 2,
     },
@@ -176,6 +153,7 @@ const styles = StyleSheet.create({
         height: 36,
         alignItems: 'center',
         justifyContent: 'center',
+        marginLeft: 12,
     },
     progressTrack: {
         position: 'absolute',
@@ -183,10 +161,10 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: 2,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: Platform.OS === 'ios' ? PlatformColor('separator') : 'rgba(255,255,255,0.2)',
     },
     progressFill: {
         height: 2,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Platform.OS === 'ios' ? PlatformColor('label') : '#FFFFFF',
     },
 });

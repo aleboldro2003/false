@@ -5,10 +5,12 @@ import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { usePlayer } from '@/contexts/PlayerContext';
 import { tabState } from './tabState';
 
 export default function TabLayout() {
   const router = useRouter();
+  const { currentTrack } = usePlayer();
 
   const updateTabState = (name: string) => {
     tabState.lastActive = name;
@@ -17,12 +19,19 @@ export default function TabLayout() {
   return (
     <View style={styles.wrapper}>
       <NativeTabs
+        minimizeBehavior={currentTrack ? 'onScrollDown' : 'never'}
         blurEffect="systemChromeMaterial"
         iconColor={{
           selected: '#FFFFFF',
           default: '#888888',
         }}
       >
+        {currentTrack && (
+          <NativeTabs.BottomAccessory>
+            <MiniPlayer />
+          </NativeTabs.BottomAccessory>
+        )}
+
         <NativeTabs.Trigger
           name="index"
           listeners={{ focus: () => updateTabState('index') }}
@@ -64,11 +73,6 @@ export default function TabLayout() {
         </NativeTabs.Trigger>
       </NativeTabs>
 
-      {/* Mini-player floating above the tab bar */}
-      <View style={styles.miniPlayerContainer} pointerEvents="box-none">
-        <MiniPlayer />
-      </View>
-
       {/* 
         Transparent overlay to intercept "Create" tab presses.
         This prevents the native navigation to the "create" tab and opens the modal directly.
@@ -88,14 +92,6 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
-  miniPlayerContainer: {
-    position: 'absolute',
-    bottom: 90, // Adjusted for native tab bar height
-    left: 0,
-    right: 0,
-    zIndex: 9999,
-    elevation: 10,
   },
   createOverlay: {
     position: 'absolute',
