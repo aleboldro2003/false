@@ -3,7 +3,7 @@ import { Colors } from '@/constants/theme';
 import { useRouter } from 'expo-router';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { usePlayer } from '@/contexts/PlayerContext';
 import { tabState } from './tabState';
@@ -72,18 +72,6 @@ export default function TabLayout() {
           <NativeTabs.Trigger.Icon sf="person.fill" />
         </NativeTabs.Trigger>
       </NativeTabs>
-
-      {/* 
-        Transparent overlay to intercept "Create" tab presses.
-        This prevents the native navigation to the "create" tab and opens the modal directly.
-        Positioned at the center (1/5th of width) over the tab bar.
-      */}
-      <TouchableOpacity
-        style={styles.createOverlay}
-        onPress={() => router.push('/create-post')}
-        activeOpacity={1}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-      />
     </View>
   );
 }
@@ -92,14 +80,5 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: Colors.background,
-  },
-  createOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    alignSelf: 'center',
-    width: '20%', // Assuming 5 tabs, 100/5 = 20%
-    height: 85,   // Covers standard tab bar height
-    zIndex: 10000,
-    // backgroundColor: 'rgba(255, 0, 0, 0.2)', // Uncomment for debugging position
   },
 });
