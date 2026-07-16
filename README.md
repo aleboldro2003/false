@@ -4,6 +4,8 @@
 
 False e' un'app mobile social realizzata con Expo e React Native, pensata per pubblicare contenuti, seguire profili, interagire con post e ascoltare podcast in un'esperienza moderna e scura.
 
+**Descrizione breve:** social mobile dark-first per post, profili, podcast e contenuti dinamici, costruito con Expo SDK 57, React Native e Supabase.
+
 Il progetto include autenticazione, feed, profili utente, creazione di post, gestione podcast, player multimediale e integrazione con Supabase per dati, sessioni e contenuti dinamici.
 
 ## Funzionalita'
