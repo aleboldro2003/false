@@ -114,11 +114,12 @@ export default function ProfileScreen() {
                 id: row.id,
                 title: row.title,
                 description: row.description,
-                thumbnail: row.image_url,
+                thumbnail: row.cover_url || row.image_url || 'https://picsum.photos/seed/pod/800/450',
                 creatorName: profile?.display_name || user.user_metadata?.full_name || 'Me',
-                creatorAvatar: profile?.avatar_url || user.user_metadata?.avatar_url,
-                duration: '00:00', // Need format
-                videoUrl: row.video_url,
+                creatorAvatar: profile?.avatar_url || user.user_metadata?.avatar_url || 'https://picsum.photos/seed/pod/100/100',
+                duration: row.duration ? `${Math.floor(row.duration / 60)}:${(row.duration % 60).toString().padStart(2, '0')}` : '0:00',
+                durationSeconds: row.duration || 0,
+                videoUrl: row.media_url || row.video_url,
             }));
             setPodcasts(mapped);
         } catch (err) {
