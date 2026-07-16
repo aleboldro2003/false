@@ -1,50 +1,55 @@
-# Welcome to your Expo app 👋
+# False
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![Alessandro Boldrini - False](assets/images/alessandro-boldrini-cover.png)
 
-## Get started
+False e' un'app mobile social realizzata con Expo e React Native, pensata per pubblicare contenuti, seguire profili, interagire con post e ascoltare podcast in un'esperienza moderna e scura.
 
-1. Install dependencies
+Il progetto include autenticazione, feed, profili utente, creazione di post, gestione podcast, player multimediale e integrazione con Supabase per dati, sessioni e contenuti dinamici.
 
-   ```bash
-   npm install
-   ```
+## Funzionalita'
 
-2. Start the app
+- Feed principale con post, media, like, commenti e repost
+- Autenticazione utente tramite Supabase
+- Profili personali e pagine utente pubbliche
+- Creazione di post con contenuti testuali e multimediali
+- Sezione podcast con player dedicato
+- Mini-player persistente nella navigazione
+- Ricerca e navigazione tramite Expo Router
+- Layout mobile-first ottimizzato per Expo Go
 
-   ```bash
-   npx expo start
-   ```
+## Stack
 
-In the output, you'll find options to open the app in a
+- Expo SDK 57
+- React Native
+- React
+- TypeScript
+- Expo Router
+- Supabase
+- Expo Audio e Expo Video
+- Google AI Studio per supporto alla progettazione e sviluppo AI
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Avvio in locale
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+**Prerequisiti:** Node.js, npm ed Expo Go installato sul telefono.
 
-## Get a fresh project
-
-When you're ready, run:
+1. Installa le dipendenze:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Avvia il progetto:
 
-## Learn more
+```bash
+npx expo start --clear
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Scansiona il QR code con Expo Go.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Database
 
-## Join the community
+Il progetto usa Supabase per autenticazione e dati applicativi. Senza configurazione del database alcune schermate possono aprirsi, ma feed, profili, interazioni e contenuti dinamici dipendono dalle tabelle e dalle policy Supabase.
 
-Join our community of developers creating universal apps.
+## Note
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Questo repository contiene il frontend mobile dell'app False. Il progetto e' stato aggiornato a Expo SDK 57 per essere compatibile con le versioni recenti di Expo Go.

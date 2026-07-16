@@ -97,7 +97,6 @@ export default function HomeScreen() {
           comments: row.comments?.[0]?.count || 0,
           reposts: 0,
           likes: row.likes?.[0]?.count || 0,
-          likes: row.likes?.[0]?.count || 0,
           likedByMe: likedPostIds.has(row.id),
           // We need author_id for navigation, let's add it to the Post object if possible, or use a workaround.
           // The Post interface in mockData doesn't have author_id. I should add it there too? 
@@ -289,7 +288,6 @@ const styles = StyleSheet.create({
   },
   aiButton: {
     padding: Spacing.sm,
-    backgroundColor: Colors.surface, // Subtle background or just icon? User said "tasto" (button).
     // Let's make it a small pill or circle?
     // Or just a prominent icon. "Tasto" implies clickable area.
     borderRadius: Radius.full,
