@@ -31,14 +31,18 @@ const PlayerContext = createContext<PlayerContextType>({
 export function PlayerProvider({ children }: { children: ReactNode }) {
     const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const videoSource = currentTrack?.videoUrl?.trim() ? currentTrack.videoUrl : null;
 
     // Singleton Video Player
-    const player = useVideoPlayer(currentTrack?.videoUrl || '', player => {
+    const player = useVideoPlayer(videoSource, player => {
         player.loop = false;
+        player.timeUpdateEventInterval = 0.25;
         // Don't auto-play here, we control it via effects or user interaction
     });
 
     const togglePlayback = () => {
+        if (!videoSource) return;
+
         if (player.playing) {
             player.pause();
         } else {
@@ -61,14 +65,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     // useVideoPlayer handles source changes automatically when the first arg changes.
     // But we might need to ensure it plays if it was playing before, or reset state.
     useEffect(() => {
-        if (currentTrack?.videoUrl) {
+        if (videoSource) {
             // If we switch tracks, maybe we want to auto-play only if we were already playing?
             // Or just let user decide. For now, let's keep simple.
             if (isPlaying) {
                 player.play();
             }
+        } else if (player.playing) {
+            player.pause();
         }
-    }, [currentTrack]);
+    }, [player, videoSource, isPlaying]);
 
     return (
         <PlayerContext.Provider

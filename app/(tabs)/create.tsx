@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 
-// This screen is never shown — the tab press is intercepted
-// to open the CreatePost modal instead.
 export default function CreatePlaceholder() {
+    const router = useRouter();
+
+    useEffect(() => {
+        router.replace('/(tabs)');
+        const timeout = setTimeout(() => {
+            router.push('/create-post');
+        }, 0);
+
+        return () => clearTimeout(timeout);
+    }, [router]);
+
     return <View style={styles.container} />;
 }
 
