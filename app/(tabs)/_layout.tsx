@@ -2,8 +2,11 @@ import React from 'react';
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { Colors } from '@/constants/theme';
 import MiniPlayer from '@/components/MiniPlayer';
+import { usePlayer } from '@/contexts/PlayerContext';
 
 export default function TabLayout() {
+  const { currentTrack } = usePlayer();
+
   return (
     <NativeTabs
       blurEffect="systemChromeMaterialDark"
@@ -17,9 +20,11 @@ export default function TabLayout() {
       minimizeBehavior="automatic"
       disableTransparentOnScrollEdge
     >
-      <NativeTabs.BottomAccessory>
-        <MiniPlayer />
-      </NativeTabs.BottomAccessory>
+      {currentTrack && (
+        <NativeTabs.BottomAccessory>
+          <MiniPlayer />
+        </NativeTabs.BottomAccessory>
+      )}
 
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
